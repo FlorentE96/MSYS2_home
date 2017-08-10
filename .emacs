@@ -1,13 +1,4 @@
 ;; Packages
-;; Added by Package.el.  This must come before configurations of
-;; installed packages.  Don't delete this line.  If you don't want it,
-;; just comment it out by adding a semicolon to the start of the line.
-;; You may delete these explanatory comments.
-
-;; Added by Package.el.  This must come before configurations of
-;; installed packages.  Don't delete this line.  If you don't want it,
-;; just comment it out by adding a semicolon to the start of the line.
-;; You may delete these explanatory comments.
 (require 'package) ;; You might already have this line
 (let* ((no-ssl (and (memq system-type '(windows-nt ms-dos))
                     (not (gnutls-available-p))))
@@ -28,8 +19,6 @@
 (add-to-list 'load-path "~/.emacs.d/indent-guide-master/")
 (add-to-list 'load-path "~/.emacs.d/highlight-indent-guides-master/")
 (package-initialize)
-(require 'all-the-icons)
-
 
 ;; Tool Bars / Menu Bars
 (tool-bar-mode -1)
@@ -82,6 +71,8 @@
 ;; Select region and color
 (transient-mark-mode t)
 
+(require 'all-the-icons)
+
 ;; Fonts
 ; (set-default-font "Hack")
 (set-default-font "DejaVu Sans Mono")
@@ -112,24 +103,6 @@
  '(fringe ((t (:background "grey8" :foreground "royal blue"))))
  '(sml/time ((t (:inherit sml/modes :foreground "tomato" :width semi-condensed))))
  '(stripe-highlight ((t (:background "#2e2e31")))))
-
-(defun toggle-window-dedicated ()
-  "Control whether or not Emacs is allowed to display another
-buffer in current window."
-  (interactive)
-  (message
-   (if (let (window (get-buffer-window (current-buffer)))
-         (set-window-dedicated-p window (not (window-dedicated-p window))))
-       "%s: Can't touch this!"
-     "%s is up for grabs.")
-   (current-buffer)))
-
-(global-set-key (kbd "C-c t") 'toggle-window-dedicated)
-;; Maximize Window on startup
-(add-to-list 'initial-frame-alist '(fullscreen . maximized))
-;; No startup message
-(setq inhibit-startup-message t)
-(put 'upcase-region 'disabled nil)
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -201,32 +174,51 @@ buffer in current window."
    (unspecified "#272822" "#3C3D37" "#F70057" "#F92672" "#86C30D" "#A6E22E" "#BEB244" "#E6DB74" "#40CAE4" "#66D9EF" "#FB35EA" "#FD5FF0" "#74DBCD" "#A1EFE4" "#F8F8F2" "#F8F8F0")))
 (load-theme 'monokai t)
 
-;; (defface egoge-display-time
-;;   '((((type x w32 mac))
-;;      ;; #060525 is the background colour of my default face.
-;;      (:foreground "tomato" :height 90))
-;;     (((type tty))
-;;      (:foreground "tomato")))
-;;   "Face used to display the time in the mode line.")
-
+;; #### CURSOR ####
 (set-cursor-color "#ff4d4d")
+;; Beacon mode : helps you find your cursor
 (beacon-mode 1)
 (setq beacon-push-mark 35)
 (setq beacon-blink-when-window-scrolls nil)
 (setq beacon-color "tomato")
 (global-set-key (kbd "C-b") 'beacon-blink)
 
- ;; This causes the current time in the mode line to be displayed in
- ;; `egoge-display-time-face' to make it stand out visually.
+;; Format for displaying time
 (setq display-time-string-forms
        '((propertize (concat " " dayname "." day " " monthname " " 24-hours ":" minutes " ")
-                     ;; 'face 'egoge-display-time
                      )))
 
+;; show time
 (display-time-mode 1)
+
+;; Do not save desktop
 (desktop-save-mode -1)
+
+;; Hide scroll bar
 (scroll-bar-mode -1)
 
+;; Start in full screen
+(toggle-frame-fullscreen)
+
+;; Window Dedicated toggling
+;; from https://emacs.stackexchange.com/questions/2189/how-can-i-prevent-a-command-from-using-specific-windows
+(defun toggle-window-dedicated ()
+  "Control whether or not Emacs is allowed to display another
+buffer in current window."
+  (interactive)
+  (message
+   (if (let (window (get-buffer-window (current-buffer)))
+         (set-window-dedicated-p window (not (window-dedicated-p window))))
+       "%s: Can't touch this!"
+     "%s is up for grabs.")
+   (current-buffer)))
+(global-set-key (kbd "C-c t") 'toggle-window-dedicated)
+
+;; No startup message
+(setq inhibit-startup-message t)
+(put 'upcase-region 'disabled nil)
+
+;; Undo tree mode for intuitive linear undo/redo
 (global-undo-tree-mode 1)
 
 (defalias 'redo 'undo-tree-redo)
@@ -234,14 +226,16 @@ buffer in current window."
 (global-set-key (kbd "C-y") 'redo) ; 【Ctrl+Shift+z】;  Mac style
 (global-set-key (kbd "C-S-z") 'redo) ; 【Ctrl+Shift+z】;  Mac style
 
+;; Classic ctrl+v pasting
 (global-set-key (kbd "C-v") 'yank)
 
+;; Occur (regexp matching) shortcut
 (global-set-key (kbd "C-c o") 'occur)
 
-;; http://stackoverflow.com/a/25960236/183120
 ;; http://home.thep.lu.se/~karlf/emacs.html
 
-
+;; ### CODE FOLDING ###
+;; https://www.emacswiki.org/emacs/HideShow
 (defun toggle-selective-display (column)
       (interactive "P")
       (set-selective-display
@@ -273,16 +267,13 @@ buffer in current window."
 
 ; (global-set-key (kbd "C-\\") 'toggle-selective-display)
 
-;;
-
+;; Better looking code folding
 (autoload 'hideshowvis-enable "hideshowvis" "Highlight foldable regions")
-
 (autoload 'hideshowvis-minor-mode
   "hideshowvis"
   "Will indicate regions foldable with hideshow in the fringe."
   'interactive)
 ;; (hideshowvis-symbols)
-
 (if (not (require 'hideshowvis nil t))
         (message "'hideshowvis' not found")
       (hideshowvis-symbols))
@@ -299,10 +290,14 @@ buffer in current window."
   ;; ;; '(font-lock-builtin-face ((t (:foreground "forest green" :box (:line-width 1 :color "forest green") :weight normal))))
   ;; ;; '(font-lock-warning-face ((t (:foreground "red" :box (:line-width 1 :color "orange red") :underline nil :slant italic :weight bold))))
 
+;; ########## PROGRAMMING ##########
 (defun my-c-common-setup ()
+  ;; Shortcut for opening header/source
   (local-set-key (kbd "C-c C-o") 'ff-find-other-file)
+  ;; highlight the line under the point
   (hl-line-mode 1)
   ;; (fci-mode)
+  ;; Highlight special keywords
   (when (> (display-color-cells) 16)
   (font-lock-add-keywords nil '(("\\<\\(__func__\\|__FUNCTION__\\|__PRETTY_FUNCTION__\\|__LINE__\\|__FILE__\\)"
                                  1 font-lock-preprocessor-face prepend)))
@@ -313,16 +308,6 @@ buffer in current window."
   ;; (irony-mode 1)
   ;; (local-set-key (kbd "C-c C-p") 'company-complete)
   )
-
-(defun tf-toggle-show-trailing-whitespace ()
-  "Toggle show-trailing-whitespace between t and nil"
-  (interactive)
-  (setq show-trailing-whitespace (not show-trailing-whitespace))
-  (if show-trailing-whitespace
-      (message "Showing trailing WS...")
-    (message "Hiding trailing WS...")))
-
-(global-set-key (kbd "C-<") 'tf-toggle-show-trailing-whitespace)
 
 ;; replace the `completion-at-point' and `complete-symbol' bindings in
 ;; irony-mode's buffers by irony-mode's function
@@ -368,6 +353,26 @@ thread_local\\|nullptr\\|noexcept\\|char16_t\\|char32_t\\)"
 (add-hook 'shell-script-mode-hook 'rainbow-mode)
 
 
+(autoload 'matlab-mode "matlab" "Matlab Editing Mode" t)
+(add-to-list
+ 'auto-mode-alist
+ '("\\.m$" . matlab-mode))
+(setq matlab-indent-function t)
+(setq matlab-shell-command "matlab")
+
+;; Highlight the trailing whitespaces in bright pink
+(defun tf-toggle-show-trailing-whitespace ()
+  "Toggle show-trailing-whitespace between t and nil"
+  (interactive)
+  (setq show-trailing-whitespace (not show-trailing-whitespace))
+  (if show-trailing-whitespace
+      (message "Showing trailing WS...")
+    (message "Hiding trailing WS...")))
+
+(global-set-key (kbd "C-<") 'tf-toggle-show-trailing-whitespace)
+
+;; ##### Annoying buffers ######
+
 ;; Makes *scratch* empty.
 (setq initial-scratch-message "")
 
@@ -395,6 +400,7 @@ thread_local\\|nullptr\\|noexcept\\|char16_t\\|char32_t\\)"
 (add-hook 'window-setup-hook 'delete-other-windows)
 (sml/setup)
 
+;; flash instead of bell
 (setq visible-bell t)
 
 ;; (require 'helm)
@@ -406,18 +412,14 @@ thread_local\\|nullptr\\|noexcept\\|char16_t\\|char32_t\\)"
 
 ;; (global-set-key [C-tab] 'my-speedbar-fun)
 
-(autoload 'matlab-mode "matlab" "Matlab Editing Mode" t)
-(add-to-list
- 'auto-mode-alist
- '("\\.m$" . matlab-mode))
-(setq matlab-indent-function t)
-(setq matlab-shell-command "matlab")
 ;; (require 'highlight-indentation)
 ;; (set-face-background 'highlight-indentation-face "gray11")
 ;; (set-face-background 'highlight-indentation-current-column-face "gray20")
 ;; (require 'indent-guide)
 ;; (setq indent-guide-char "|")
 ;; (indent-guide-global-mode)
+
+;; Pretty indent guides
 (require 'highlight-indent-guides)
 (add-hook 'prog-mode-hook 'highlight-indent-guides-mode)
 (setq highlight-indent-guides-method 'character)
@@ -426,6 +428,8 @@ thread_local\\|nullptr\\|noexcept\\|char16_t\\|char32_t\\)"
 
 (require 'yasnippet)
 (yas-global-mode 1)
+
+;; ########## VERSION CONTROL ##########
 (setq ediff-split-window-function 'split-window-horizontally)
 (defun update-diff-colors ()
   "update the colors for diff faces"
@@ -456,6 +460,8 @@ thread_local\\|nullptr\\|noexcept\\|char16_t\\|char32_t\\)"
               (add-hook 'ediff-quit-hook restore-window-configuration 'append)
               (add-hook 'ediff-suspend-hook restore-window-configuration 'append))))
 
+
+;; ########### NEOTREE BROWSER ###########
 (setq neo-theme (if (display-graphic-p) 'icons 'arrow))
 (add-to-list 'load-path "/some/path/neotree")
 (require 'neotree)
@@ -479,6 +485,7 @@ thread_local\\|nullptr\\|noexcept\\|char16_t\\|char32_t\\)"
   :ensure t
   :bind (("C-S-<mouse-1>" . mc/toggle-cursor-on-click)))
 
+;; Rule for 80 columns
 (setq-default fill-column 80)
 (require 'fill-column-indicator)
 (setq fci-rule-color "#686868")
