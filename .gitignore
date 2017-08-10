@@ -4,7 +4,6 @@
 # But not these files...
 !.bashrc
 !.emacs
-!.emacs.d
 !.bashrc
 !.gitignore
 !.dircolors
