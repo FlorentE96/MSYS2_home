@@ -34,20 +34,39 @@
                                 (gdb "arm-none-eabi-gdb -i=mi c:/Users/Florent/Documents/Work/KORG/openmonotron-proto/main/build/x16220.elf")))
 
 ;; Backup files
-; (setq make-backup-files nil) ; stop creating backup~ files
-;;(setq auto-save-default nil) ; stop creating #autosave# files
+(setq make-backup-files nil) ; stop creating backup~ files
+(setq auto-save-default nil) ; stop creating #autosave# files
 
 ;; Tab width
 (setq tab-width 4)
+
 ;; Parenthesis matching
 (show-paren-mode 1)
+
 ;; Syntax highlight
 (global-font-lock-mode t)
 (setq font-lock-maximum-decoration t)
+
 ;; Delete Selection
 (delete-selection-mode t)
+
 ;; Disable Backup File
 (setq make-backup-file nil)
+
+;; show time
+(display-time-mode 1)
+
+;; Do not save desktop
+(desktop-save-mode -1)
+
+;; Hide scroll bar
+(scroll-bar-mode -1)
+
+;; Start in full screen
+(toggle-frame-fullscreen)
+
+;; flash instead of bell
+(setq visible-bell t)
 
 ;; ===================== SCROLLING =====================
 ;; Single line scrolling
@@ -187,18 +206,6 @@
 (setq display-time-string-forms
        '((propertize (concat " " dayname "." day " " monthname " " 24-hours ":" minutes " ")
                      )))
-
-;; show time
-(display-time-mode 1)
-
-;; Do not save desktop
-(desktop-save-mode -1)
-
-;; Hide scroll bar
-(scroll-bar-mode -1)
-
-;; Start in full screen
-(toggle-frame-fullscreen)
 
 ;; Window Dedicated toggling
 ;; from https://emacs.stackexchange.com/questions/2189/how-can-i-prevent-a-command-from-using-specific-windows
@@ -399,9 +406,6 @@ thread_local\\|nullptr\\|noexcept\\|char16_t\\|char32_t\\)"
 ;; Show only one active window when opening multiple files at the same time.
 (add-hook 'window-setup-hook 'delete-other-windows)
 (sml/setup)
-
-;; flash instead of bell
-(setq visible-bell t)
 
 ;; (require 'helm)
 ;; (require 'sr-speedbar)
