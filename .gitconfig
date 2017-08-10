@@ -1,0 +1,10 @@
+[user]
+	email = flo.ecochard@gmail.com
+	name = FlorentE96
+[core]
+	editor = nano
+[alias]
+	last = log -1 HEAD
+	lg = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit -10
+	lg50 = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit -50
+        pl = pull --rebase
