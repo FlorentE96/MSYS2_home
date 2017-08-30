@@ -31,7 +31,7 @@
                                  (message "Windows disposition saved")))
 
 (global-set-key (kbd "<f5>") '(lambda () (interactive) (window-configuration-to-register 9)
-                                (gdb "arm-none-eabi-gdb -i=mi c:/Users/Florent/Documents/Work/KORG/openmonotron-proto/main/build/x16220.elf")))
+                                (gdb "arm-none-eabi-gdb -i=mi c:/Users/Florent/Documents/Work/KORG/openvolca-firmware/firmware/src/build/ovf.elf")))
 
 ;; Backup files
 (setq make-backup-files nil) ; stop creating backup~ files
@@ -68,15 +68,34 @@
 ;; flash instead of bell
 (setq visible-bell t)
 
+;; ;; ===================== SCROLLING =====================
+;; ;; Single line scrolling
+;; (setq scroll-conservatively 1)
+;; ;; scroll one line at a time (less "jumpy" than defaults)
+;; (setq mouse-wheel-scroll-amount '(1 ((shift) . 1))) ;; one line at a time
+;; (setq mouse-wheel-progressive-speed nil) ;; don't accelerate scrolling
+;; (setq mouse-wheel-follow-mouse 't) ;; scroll window under mouse
+;; (setq scroll-step 1) ;; keyboard scroll one line at a time
+
 ;; ===================== SCROLLING =====================
 ;; Single line scrolling
-(setq scroll-conservatively 1)
 ;; scroll one line at a time (less "jumpy" than defaults)
 (setq mouse-wheel-scroll-amount '(1 ((shift) . 1))) ;; one line at a time
 (setq mouse-wheel-progressive-speed nil) ;; don't accelerate scrolling
 (setq mouse-wheel-follow-mouse 't) ;; scroll window under mouse
-(setq scroll-step 1) ;; keyboard scroll one line at a time
+(setq redisplay-dont-pause t
+      scroll-margin 1 ;; restricts how close point can come to the top or bottom of a window
+      scroll-step 1
+      scroll-conservatively 10000)
 
+(defun gcm-scroll-down ()
+  (interactive)
+  (scroll-up 1))
+(defun gcm-scroll-up ()
+  (interactive)
+  (scroll-down 1))
+(global-set-key [(meta down)] 'gcm-scroll-down)
+(global-set-key [(meta up)]   'gcm-scroll-up)
 ;; No tabs!!
 (setq-default indent-tabs-mode nil)
 ;; Support Wheel Mouse Scrolling
@@ -97,8 +116,6 @@
 (set-default-font "DejaVu Sans Mono")
 (when (member "DejaVu Sans Mono" (font-family-list))
   (set-face-attribute 'default nil :font "DejaVu Sans Mono-8"))
-;; (make-face 'font-lock-special-macro-face)
-;; (set-face-foreground 'font-lock-special-macro-face "pink")
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -120,9 +137,13 @@
  '(font-lock-builtin-face ((t (:foreground "forest green" :box (:line-width 1 :color "forest green") :weight normal))))
  '(font-lock-warning-face ((t (:foreground "red" :box (:line-width 1 :color "orange red") :underline nil :slant italic :weight bold))))
  '(fringe ((t (:background "grey8" :foreground "royal blue"))))
+ '(header-line ((t (:background "#353535" :foreground "#F8F8F0" :box (:line-width 1 :color "#64645E" :style unspecified)))))
  '(sml/time ((t (:inherit sml/modes :foreground "tomato" :width semi-condensed))))
- '(stripe-highlight ((t (:background "#2e2e31")))))
-
+ '(stripe-highlight ((t (:background "#2e2e31"))))
+ '(visible-mark-active ((t (:underline (:color "magenta" :style wave)))))
+ '(visible-mark-face1 ((t (:underline "purple"))))
+ '(visible-mark-face2 ((t (:underline "deep sky blue"))))
+ '(which-func ((t (:foreground "steel blue" :slant italic :height 1.3)))))
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -133,15 +154,20 @@
  '(cursor-type (quote (bar . 3)))
  '(custom-safe-themes
    (quote
-    ("3c83b3676d796422704082049fc38b6966bcad960f896669dfc21a7a37a748fa" "f5b591870422cd28da334552aae915cdcae3edfcfedb6653a9f42ed84bbec69f" "5e1d1564b6a2435a2054aa345e81c89539a72c4cad8536cfe02583e0b7d5e2fa" default)))
+    ("b81bfd85aed18e4341dbf4d461ed42d75ec78820a60ce86730fc17fc949389b2" "c50a672a129e71b9362b209c63d4e203ccc88a388c370411535b8b54ecc878bc" "365d9553de0e0d658af60cff7b8f891ca185a2d7ba3fc6d29aadba69f5194c7f" "ff7625ad8aa2615eae96d6b4469fcc7d3d20b2e1ebc63b761a349bebbb9d23cb" "3c83b3676d796422704082049fc38b6966bcad960f896669dfc21a7a37a748fa" "f5b591870422cd28da334552aae915cdcae3edfcfedb6653a9f42ed84bbec69f" "5e1d1564b6a2435a2054aa345e81c89539a72c4cad8536cfe02583e0b7d5e2fa" default)))
  '(ediff-diff-options "-w" t)
  '(ediff-highlight-all-diffs nil t)
  '(ediff-split-window-function (quote split-window-horizontally) t)
  '(ediff-window-setup-function (quote ediff-setup-windows-plain))
  '(fci-rule-color "#3C3D37")
- '(gdb-many-windows nil)
+ '(gdb-many-windows t)
+ '(global-visible-mark-mode t)
  '(global-visual-line-mode t)
  '(gud-gdb-command-name "arm-none-eabi-gdb -i=mi build/x16220.elf")
+ '(gud-tooltip-mode t)
+ '(gud-tooltip-modes
+   (quote
+    (gud-mode c-mode c++-mode fortran-mode python-mode cc-mode)))
  '(highlight-changes-colors (quote ("#FD5FF0" "#AE81FF")))
  '(highlight-tail-colors
    (quote
@@ -154,18 +180,28 @@
      ("#F309DF" . 85)
      ("#3C3D37" . 100))))
  '(hs-hide-comments-when-hiding-all nil)
+ '(jdee-db-active-breakpoint-face-colors (cons "#0d0f11" "#7FC1CA"))
+ '(jdee-db-requested-breakpoint-face-colors (cons "#0d0f11" "#A8CE93"))
+ '(jdee-db-spec-breakpoint-face-colors (cons "#0d0f11" "#899BA6"))
+ '(line-spacing nil)
  '(magit-diff-use-overlays nil)
  '(monokai-highlight-line "grey11")
  '(neo-autorefresh t)
  '(neo-click-changes-root nil)
  '(neo-theme (quote icons))
+ '(neo-window-width 30)
+ '(org-ellipsis " \357\204\207 ")
+ '(org-fontify-done-headline t)
+ '(org-fontify-quote-and-verse-blocks t)
+ '(org-fontify-whole-heading-line t)
  '(package-selected-packages
    (quote
-    (fill-column-indicator multiple-cursors stripe-buffer neotree doom-themes magit yasnippet highlight-indentation markdown-mode use-package helm rainbow-mode beacon smart-mode-line undo-tree monokai-theme color-theme-monokai zen-and-art-theme)))
+    (dracula-theme csound-mode visible-mark dumb-jump fill-column-indicator multiple-cursors stripe-buffer neotree doom-themes magit yasnippet highlight-indentation markdown-mode use-package helm rainbow-mode beacon smart-mode-line undo-tree monokai-theme color-theme-monokai zen-and-art-theme)))
  '(pos-tip-background-color "#A6E22E")
  '(pos-tip-foreground-color "#272822")
  '(sml/name-width 20)
  '(sml/theme (quote dark))
+ '(tooltip-mode t)
  '(vc-annotate-background nil)
  '(vc-annotate-color-map
    (quote
@@ -188,9 +224,28 @@
      (340 . "#2790C3")
      (360 . "#66D9EF"))))
  '(vc-annotate-very-old-color nil)
+ '(visible-mark-max 2)
  '(visual-line-fringe-indicators (quote (nil right-curly-arrow)))
  '(weechat-color-list
-   (unspecified "#272822" "#3C3D37" "#F70057" "#F92672" "#86C30D" "#A6E22E" "#BEB244" "#E6DB74" "#40CAE4" "#66D9EF" "#FB35EA" "#FD5FF0" "#74DBCD" "#A1EFE4" "#F8F8F2" "#F8F8F0")))
+   (unspecified "#272822" "#3C3D37" "#F70057" "#F92672" "#86C30D" "#A6E22E" "#BEB244" "#E6DB74" "#40CAE4" "#66D9EF" "#FB35EA" "#FD5FF0" "#74DBCD" "#A1EFE4" "#F8F8F2" "#F8F8F0"))
+ '(which-func-format
+   (quote
+    ("["
+     (:propertize which-func-current local-map
+                  (keymap
+                   (mode-line keymap
+                              (mouse-3 . end-of-defun)
+                              (mouse-2 .
+                                       #[nil "e\300=\203	 \301 \207~\207"
+                                             [1 narrow-to-defun]
+                                             2 nil nil])
+                              (mouse-1 . beginning-of-defun)))
+                  face which-func mouse-face mode-line-highlight help-echo "mouse-1: go to beginning
+mouse-2: toggle rest visibility
+mouse-3: go to end")
+     "]")))
+ '(which-function-mode t))
+
 (load-theme 'monokai t)
 
 ;; #### CURSOR ####
@@ -493,3 +548,33 @@ thread_local\\|nullptr\\|noexcept\\|char16_t\\|char32_t\\)"
 (setq-default fill-column 80)
 (require 'fill-column-indicator)
 (setq fci-rule-color "#686868")
+
+(global-set-key (kbd "C-<tab>") 'dabbrev-expand)
+(define-key minibuffer-local-map (kbd "C-<tab>") 'dabbrev-expand)
+
+(defface visible-mark-active ;; put this before (require 'visible-mark)
+  '((((type tty) (class mono)))
+    (t (:background "magenta"))) "")
+(require 'visible-mark)
+(global-visible-mark-mode 1) ;; or add (visible-mark-mode) to specific hooks
+(setq visible-mark-max 2)
+(setq visible-mark-faces `(visible-mark-face1 visible-mark-face2))
+
+(which-function-mode)
+
+(setq mode-line-misc-info (delete (assoc 'which-func-mode
+                                      mode-line-misc-info) mode-line-misc-info)
+      which-func-header-line-format '(which-func-mode ("" which-func-format)))
+(defadvice which-func-ff-hook (after header-line activate)
+  (when which-func-mode
+    (setq mode-line-misc-info (delete (assoc 'which-func-mode
+                                          mode-line-misc-info) mode-line-misc-info)
+          header-line-format which-func-header-line-format)))
+(setq which-func-unknown "*none*")
+(setq header-line-format
+      (concat (propertize " " 'display '((space :align-to 0)))
+              "Welcome..."))
+(require 'org)
+(define-key global-map "\C-cl" 'org-store-link)
+(define-key global-map "\C-ca" 'org-agenda)
+(setq org-log-done t)
