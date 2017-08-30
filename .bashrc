@@ -61,7 +61,7 @@ up() { cd $(eval printf '../'%.0s {1..$1}) && pwd; }
 
 # Welcome screen
 welcome() {
-    echo -e "\033[38;5;34m\e#3今日はフロラン\n\e#4今日はフロラン\n";
+    echo -e "\033[38;5;34m\e#3こんにちわフロラン\n\e#4こんにちわフロラン\n";
 }
 
 # base name renaming (ex: foo.exe to bar.exe)
@@ -86,6 +86,10 @@ make_log() {
     df > ~/.makelog;
     make 2>&1 | tee -a ~/.makelog | GREP_COLOR="01;31" egrep --text --color=always -i "error|Error|$" | GREP_COLOR="01;93" grep --text --color=always -i -E "warning|$" | GREP_COLOR="01;93" grep --text --color=always -i -E "\^|$"  | GREP_COLOR="01;96" grep --text -E -i --color=always "\./.*:[1-9]+:[1-9]+|$";
     # cat ~/.makelog;
+}
+
+make_color() {
+    make_klm_3278_dbg.sh 2>&1 | GREP_COLOR="01;31" egrep --text --color=always -i "error|Error|$" | GREP_COLOR="01;93" grep --text --color=always -i -E "warning|$" | GREP_COLOR="01;93" grep --text --color=always -i -E "\^|$"  | GREP_COLOR="01;96" grep --text -E -i --color=always "\./.*:[1-9]+:[1-9]+|$";
 }
 
 # bc calculator wrapper
@@ -152,14 +156,13 @@ alias grep='grep --color'
 alias cddesk='cd /c/Users/Florent/Desktop'
 alias cddl='cd /c/Users/Florent/Downloads'
 alias cdfx='cd /c/Users/Florent/Documents/Work/KORG/openmonotron-proto/main/fx/'
-alias korg='/c/Users/Florent/Documents/Work/KORG/'
-alias koma='/c/Users/Florent/Documents/Work/KOMA/'
-alias school='/c/Users/Florent/Documents/School/ENSEIRB'
+alias cdkorg='cd /c/Users/Florent/Documents/Work/KORG/'
+alias cdkoma='cd /c/Users/Florent/Documents/Work/KOMA/'
+alias cdschool='/c/Users/Florent/Documents/School/ENSEIRB'
 alias cddbg='cd /c/Users/Florent/Documents/Work/KORG/openmonotron-proto/main/ovf/firmware/dbg'
 alias cdmain='cd /c/Users/Florent/Documents/Work/KORG/openmonotron-proto/main/'
-alias doc='/c/Users/Florent/Documents/'
-alias dl='/c/Users/Florent/Downloads/'
-
+alias cddoc='cd /c/Users/Florent/Documents/'
+alias cdreport='cd /c/Users/Florent/Documents/School/ENSEIRB/2A/Stage/KORG/report'
 ## -- Various --
 alias fresh='clear && welcome'
 alias gs='git status'
@@ -169,9 +172,10 @@ alias lastmk='cat ~/.makelog | GREP_COLOR="01;31" egrep --text --color=always -i
 alias mkc='make clean'
 alias bc='bc -l'
 alias em='emacs & disown -a'
-alias notif='/c/Users/Florent/Desktop/Notifu/notifu64.exe //d 2000 //q //m '
+alias notif='/home/Florent/bin/Notifu/notifu64.exe //d 2000 //q //m '
 alias datef='echo -e $(date +"\n\033[0;32m\t%A %d %B %Y\n\033[0;33m\t%R:%S (%Z)\n\033[0;0m")' # formatted version of the date
 alias df='datef'
-
+alias translate='trans'
+alias trad='trans'
 clear;
 welcome;
