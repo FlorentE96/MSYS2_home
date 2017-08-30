@@ -5,6 +5,9 @@
 	editor = nano
 [alias]
 	last = log -1 HEAD
-	lg = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit -10
-	lg50 = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit -50
+	lg = log --color --graph --pretty=tformat:'%Cgreen%cd%Creset : %Cred%h%Creset -%C(yellow)%d%Creset %<|(120,trunc)%s %C(bold blue)<%an>%Creset' --abbrev-commit -10 --date=short
+	lg50 = log --color --graph --pretty=tformat:'%Cgreen%cd%Creset : %Cred%h%Creset -%C(yellow)%d%Creset %<|(120,trunc)%s  %C(bold blue)<%an>%Creset' --abbrev-commit -50 --date=short
         pl = pull --rebase
+	lg100 = log --color --graph --pretty=tformat:'%Cgreen%cd%Creset : %Cred%h%Creset -%C(yellow)%d%Creset %<|(120,trunc)%s %C(bold blue)<%an>%Creset' --abbrev-commit -100 --date=short
+	lg100me = log --color --graph --author=FlorentE96 --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit -100
+	lgMeAll = log --color --graph --author=FlorentE96 --pretty=tformat:'%Cgreen%cd%Creset - %Cred%h%Creset -%C(yellow)%d%Creset %<|(120,trunc)%s' --abbrev-commit --date=short
